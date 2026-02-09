@@ -1,25 +1,16 @@
-# Use Java 17
-FROM eclipse-temurin:17-jdk-alpine
+# Use Maven with Java 17
+FROM maven:3.9.6-eclipse-temurin-17
 
-# Set working directory
 WORKDIR /app
 
-# Copy Maven files
-COPY pom.xml .
-COPY mvnw .
-COPY .mvn .mvn
-
-# Download dependencies
-RUN ./mvnw dependency:go-offline
-
-# Copy source code
-COPY src src
+# Copy everything
+COPY . .
 
 # Build the application
-RUN ./mvnw clean package -DskipTests
+RUN mvn clean package -DskipTests
 
-# Expose port
+# Expose Spring Boot port
 EXPOSE 8080
 
-# Run the app
+# Run the jar
 CMD ["java", "-jar", "target/movie-api-1.0.0.jar"]
